@@ -1,0 +1,6 @@
+@NutriCook_AI_WebAPI_HostAddress = http://localhost:5293
+
+GET {{NutriCook_AI_WebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
