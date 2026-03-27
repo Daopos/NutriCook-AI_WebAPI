@@ -42,7 +42,7 @@ namespace NutriCook_AI_WebAPI.Middleware
                 {
                     success = false,
                     message = ex.Message,
-                    StatusCode = statusCode,
+                    statusCode = statusCode,
                     detail = _env.IsDevelopment() ? ex.StackTrace : null
                 };
 

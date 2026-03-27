@@ -45,6 +45,15 @@ namespace NutriCook_AI_WebAPI.Controllers
             return Ok(stocks);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteStockById(int id)
+        {
+
+            await this._stockService.DeleteAsync(id);
+
+            return NoContent();
+        }
+
 
     }
 }

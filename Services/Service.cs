@@ -1,6 +1,7 @@
 ﻿using NutriCook_AI_WebAPI.Data;
 using NutriCook_AI_WebAPI.Interfaces.IRepo;
 using NutriCook_AI_WebAPI.Interfaces.IServices;
+using NutriCook_AI_WebAPI.Middleware.Exceptions;
 
 namespace NutriCook_AI_WebAPI.Services
 {
@@ -43,7 +44,7 @@ namespace NutriCook_AI_WebAPI.Services
         {
             var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
-                throw new Exception("Entity not found");
+                throw new NotFoundException("Testing lang hahaha");
 
             _repository.Delete(entity);
             await _context.SaveChangesAsync();
