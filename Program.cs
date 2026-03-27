@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NutriCook_AI_WebAPI.Data;
 using NutriCook_AI_WebAPI.Interfaces.IRepo;
 using NutriCook_AI_WebAPI.Interfaces.IServices;
+using NutriCook_AI_WebAPI.Middleware;
 using NutriCook_AI_WebAPI.Repositories;
 using NutriCook_AI_WebAPI.Services;
 using Scalar.AspNetCore;
@@ -11,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 
-//COnnect to visula local db
+//Connect to visual studio local db
 builder.Services.AddDbContext<AppDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
@@ -31,6 +32,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Add global exception handling middleware
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
