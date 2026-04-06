@@ -10,6 +10,7 @@ namespace NutriCook_AI_WebAPI.Data
         }
 
         public DbSet<Stock> Stocks {get; set;}
+        public DbSet<Recipe> Recipes { get; set; }
 
     }
 }

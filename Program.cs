@@ -27,6 +27,7 @@ builder.Services.AddScoped<IStockRepo, StockRepository>();
 builder.Services.AddScoped<IStockService, StockService>();
 
 builder.Services.AddHttpClient<IAIRecipeGenerator, AIRecipeGenerator>();
+builder.Services.AddScoped<IRecipeRepo, RecipeRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
