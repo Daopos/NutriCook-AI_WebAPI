@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NutriCook_AI_WebAPI.Data;
+using NutriCook_AI_WebAPI.ExternalServices;
 using NutriCook_AI_WebAPI.Interfaces.IRepo;
 using NutriCook_AI_WebAPI.Interfaces.IServices;
 using NutriCook_AI_WebAPI.Middleware;
@@ -24,6 +25,8 @@ builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 
 builder.Services.AddScoped<IStockRepo, StockRepository>();
 builder.Services.AddScoped<IStockService, StockService>();
+
+builder.Services.AddHttpClient<IAIRecipeGenerator, AIRecipeGenerator>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

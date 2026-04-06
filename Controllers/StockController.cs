@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NutriCook_AI_WebAPI.DTOs.AIRecipe;
+using NutriCook_AI_WebAPI.ExternalServices;
 using NutriCook_AI_WebAPI.Interfaces.IServices;
 using NutriCook_AI_WebAPI.Models;
 
@@ -11,23 +13,25 @@ namespace NutriCook_AI_WebAPI.Controllers
     {
 
         private readonly IStockService _stockService;
+        private readonly IAIRecipeGenerator _aiRecipeGenerator;
 
-        public StockController(IStockService stockService)
+        public StockController(IStockService stockService, IAIRecipeGenerator aiRecipeGenerator)
         {
-            this._stockService = stockService;  
+            this._stockService = stockService;
+            this._aiRecipeGenerator = aiRecipeGenerator;
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateStock([FromBody] Stock stock)
         {
-           
+
             try
             {
                 await this._stockService.CreateAsync(stock);
 
                 return Ok("Stock added successfully");
             }
-            catch (Exception err) 
+            catch (Exception err)
             {
                 Console.WriteLine("Error adding stock", err);
 
@@ -54,6 +58,14 @@ namespace NutriCook_AI_WebAPI.Controllers
             return NoContent();
         }
 
+        [HttpGet("gemini")]
+        public async Task<IActionResult> GetGeminiResponseTest([FromBody] AIRecipeRequest str)
+        {
+            var result = await this._aiRecipeGenerator.GenerateRecipe(str);
+
+            return Ok(result);
+
+        }
 
     }
 }
