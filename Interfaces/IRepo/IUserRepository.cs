@@ -8,5 +8,8 @@ namespace NutriCook_AI_WebAPI.Interfaces.IRepo
         Task<User> CreateUser(User data);
 
         Task<User?> GetUserById(int id);
+
+        Task<User?> GetUserByEmail(string email);
+
     }
 }
