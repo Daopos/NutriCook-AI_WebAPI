@@ -44,7 +44,7 @@ namespace NutriCook_AI_WebAPI.Services
         {
             var entity = await _repository.GetByIdAsync(id);
             if (entity == null)
-                throw new NotFoundException("Testing lang hahaha");
+                throw new NotFoundException("Item is not found");
 
             _repository.Delete(entity);
             await _context.SaveChangesAsync();

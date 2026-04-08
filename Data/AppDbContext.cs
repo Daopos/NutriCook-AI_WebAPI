@@ -10,6 +10,16 @@ namespace NutriCook_AI_WebAPI.Data
         }
 
         public DbSet<Stock> Stocks {get; set;}
+        public DbSet<User> Users { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+        }
         public DbSet<Recipe> Recipes { get; set; }
 
     }
