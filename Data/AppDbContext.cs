@@ -11,6 +11,7 @@ namespace NutriCook_AI_WebAPI.Data
 
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,7 +33,6 @@ namespace NutriCook_AI_WebAPI.Data
                .HasForeignKey(r => r.UserId)
                .OnDelete(DeleteBehavior.Cascade);
         }
-        public DbSet<Recipe> Recipes { get; set; }
 
     }
 }

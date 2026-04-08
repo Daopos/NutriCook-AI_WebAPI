@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="Middleware\Auth\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

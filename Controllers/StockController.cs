@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NutriCook_AI_WebAPI.DTOs.AIRecipe;
 using NutriCook_AI_WebAPI.DTOs.Recipe;
+using NutriCook_AI_WebAPI.DTOs.Stock;
 using NutriCook_AI_WebAPI.ExternalServices;
 using NutriCook_AI_WebAPI.Interfaces.IServices;
 using NutriCook_AI_WebAPI.Models;
@@ -23,18 +26,33 @@ namespace NutriCook_AI_WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateStock([FromBody] Stock stock)
+        [Authorize]
+        public async Task<IActionResult> CreateStock([FromBody] StockCreateDTO stock)
         {
 
             try
             {
-                await this._stockService.CreateAsync(stock);
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                return Ok("Stock added successfully");
+                if (userIdClaim == null)
+                    return Unauthorized("User not found in token");
+
+                var userId = int.Parse(userIdClaim);
+
+                var newStock = new Stock
+                {
+                    Name = stock.Name,
+                    Quantity = stock.Quantity,
+                    Description = stock.Description,
+                    UserId = userId
+                };
+
+                await _stockService.CreateAsync(newStock);
+
+                return Ok(new {message = "Stock added successfully" });
             }
             catch (Exception err)
             {
-                Console.WriteLine("Error adding stock", err);
 
                 return StatusCode(500, "Something went wrong on the server");
 
@@ -58,7 +76,7 @@ namespace NutriCook_AI_WebAPI.Controllers
 
             return NoContent();
         }
-  
+
 
     }
 }

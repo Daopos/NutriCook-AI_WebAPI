@@ -12,7 +12,7 @@ using NutriCook_AI_WebAPI.Data;
 namespace NutriCook_AI_WebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260408225623_InitialCreate")]
+    [Migration("20260408231635_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
