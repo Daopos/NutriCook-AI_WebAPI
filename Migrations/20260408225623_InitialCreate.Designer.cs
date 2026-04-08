@@ -12,8 +12,8 @@ using NutriCook_AI_WebAPI.Data;
 namespace NutriCook_AI_WebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260408175104_initialUserv@")]
-    partial class initialUserv
+    [Migration("20260408225623_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,36 @@ namespace NutriCook_AI_WebAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("NutriCook_AI_WebAPI.Models.Recipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Difficulty")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Recipes");
+                });
 
             modelBuilder.Entity("NutriCook_AI_WebAPI.Models.Stock", b =>
                 {
@@ -49,7 +79,12 @@ namespace NutriCook_AI_WebAPI.Migrations
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Stocks");
                 });
@@ -67,7 +102,7 @@ namespace NutriCook_AI_WebAPI.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -86,7 +121,39 @@ namespace NutriCook_AI_WebAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("NutriCook_AI_WebAPI.Models.Recipe", b =>
+                {
+                    b.HasOne("NutriCook_AI_WebAPI.Models.User", "User")
+                        .WithMany("Recipes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("NutriCook_AI_WebAPI.Models.Stock", b =>
+                {
+                    b.HasOne("NutriCook_AI_WebAPI.Models.User", "User")
+                        .WithMany("Stocks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("NutriCook_AI_WebAPI.Models.User", b =>
+                {
+                    b.Navigation("Recipes");
+
+                    b.Navigation("Stocks");
                 });
 #pragma warning restore 612, 618
         }

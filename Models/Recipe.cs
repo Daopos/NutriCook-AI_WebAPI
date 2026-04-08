@@ -14,6 +14,8 @@ namespace NutriCook_AI_WebAPI.Models
         [Required]
         public string Difficulty { get; set; }
 
+        public int UserId { get; set; }
+        public User User { get; set; }
 
     }
 }

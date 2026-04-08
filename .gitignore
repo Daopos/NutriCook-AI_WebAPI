@@ -17,7 +17,7 @@
 mono_crash.*
 
 # Dont include Appsettings
-appsettings.json
+appsettings*.json
 
 # Build results
 [Dd]ebug/

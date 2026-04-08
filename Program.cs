@@ -15,7 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-
 //Connect to visual studio local db
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))

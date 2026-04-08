@@ -16,9 +16,12 @@ namespace NutriCook_AI_WebAPI.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(6, MinimumLength = 6)]
         public string Password { get; set; }
 
         public string Role { get; set; } = "User";
+
+        public ICollection<Stock> Stocks { get; set; }
+        public ICollection<Recipe> Recipes { get; set; }
+
     }
 }

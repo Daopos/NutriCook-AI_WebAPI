@@ -13,6 +13,7 @@ namespace NutriCook_AI_WebAPI.Models
 
         public int Quantity { get; set; } = 0;
 
-
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }
