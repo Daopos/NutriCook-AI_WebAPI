@@ -20,6 +20,7 @@ namespace NutriCook_AI_WebAPI.Data
                 .HasIndex(u => u.Email)
                 .IsUnique();
         }
+        public DbSet<Recipe> Recipes { get; set; }
 
     }
 }

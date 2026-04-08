@@ -1,4 +1,5 @@
-﻿using NutriCook_AI_WebAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using NutriCook_AI_WebAPI.Data;
 using NutriCook_AI_WebAPI.Interfaces.IRepo;
 using NutriCook_AI_WebAPI.Models;
 
@@ -14,6 +15,16 @@ namespace NutriCook_AI_WebAPI.Repositories
             this._context = context;
         }
 
+
+
+        public async Task<IEnumerable<(string Name, int Quantity)>> GetAllStocksWithQuantityAsync(int userId)
+        {
+            return await _context.Stocks
+                                .Where(s => s.Quantity > 0 && s.Id == userId)
+                                .Select(s => new ValueTuple<string, int>(s.Name, s.Quantity))
+                                .ToListAsync();
+        }
+        
 
     }
 }

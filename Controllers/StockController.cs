@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NutriCook_AI_WebAPI.DTOs.AIRecipe;
+using NutriCook_AI_WebAPI.DTOs.Recipe;
 using NutriCook_AI_WebAPI.ExternalServices;
 using NutriCook_AI_WebAPI.Interfaces.IServices;
 using NutriCook_AI_WebAPI.Models;
@@ -57,15 +58,7 @@ namespace NutriCook_AI_WebAPI.Controllers
 
             return NoContent();
         }
-
-        [HttpGet("gemini")]
-        public async Task<IActionResult> GetGeminiResponseTest([FromBody] AIRecipeRequest str)
-        {
-            var result = await this._aiRecipeGenerator.GenerateRecipe(str);
-
-            return Ok(result);
-
-        }
+  
 
     }
 }
