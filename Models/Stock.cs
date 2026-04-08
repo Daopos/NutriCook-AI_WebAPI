@@ -2,7 +2,7 @@
 
 namespace NutriCook_AI_WebAPI.Models
 {
-    public class Stock
+    public class Stock : BaseModel
     {
         [Key]
         public int Id { get; set; }
