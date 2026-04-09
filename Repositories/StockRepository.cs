@@ -27,6 +27,14 @@ namespace NutriCook_AI_WebAPI.Repositories
             return stocks;
         }
 
+        public async Task<IEnumerable<Stock>> GetAllStocksByUserId(int userId)
+        {
+            var stocks = await _context.Stocks
+                                .Where(s => s.UserId == userId)
+                                .ToListAsync();
+
+            return stocks;
+        }
 
     }
 }

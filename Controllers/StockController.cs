@@ -49,7 +49,7 @@ namespace NutriCook_AI_WebAPI.Controllers
 
                 await _stockService.CreateAsync(newStock);
 
-                return Ok(new {message = "Stock added successfully" });
+                return Ok(new { message = "Stock added successfully" });
             }
             catch (Exception err)
             {
@@ -75,6 +75,22 @@ namespace NutriCook_AI_WebAPI.Controllers
             await this._stockService.DeleteAsync(id);
 
             return NoContent();
+        }
+
+
+        [HttpGet("user")]
+        public async Task<IActionResult> GetAllStockByUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userIdClaim == null)
+                return Unauthorized("User not found in token");
+
+            var userId = int.Parse(userIdClaim);
+
+            var stocks = await this._stockService.GetStocksByUserId(userId);
+
+            return Ok(stocks);
         }
 
 

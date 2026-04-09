@@ -1,10 +1,14 @@
-﻿namespace NutriCook_AI_WebAPI.Interfaces.IRepo
+﻿using NutriCook_AI_WebAPI.Models;
+
+namespace NutriCook_AI_WebAPI.Interfaces.IRepo
 {
     public interface IStockRepo
     {
 
 
         Task<IEnumerable<(string Name, int Quantity)>> GetAllStocksWithQuantityAsync(int userId);
+
+        Task<IEnumerable<Stock>> GetAllStocksByUserId(int userId);
 
     }
 }
