@@ -1,4 +1,5 @@
-﻿using NutriCook_AI_WebAPI.DTOs.AIRecipe;
+﻿using System.Collections;
+using NutriCook_AI_WebAPI.DTOs.AIRecipe;
 using NutriCook_AI_WebAPI.DTOs.Recipe;
 
 namespace NutriCook_AI_WebAPI.ExternalServices
@@ -7,6 +8,8 @@ namespace NutriCook_AI_WebAPI.ExternalServices
     {
 
         Task<AIRecipeResponse> GenerateRecipe(AIRecipeRequest req);
+
+        Task<IEnumerable<AIRecipeResponse>> GenerateRecipeBaseByStock(int userId);
 
     }
 }

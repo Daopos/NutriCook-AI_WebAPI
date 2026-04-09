@@ -19,12 +19,14 @@ namespace NutriCook_AI_WebAPI.Repositories
 
         public async Task<IEnumerable<(string Name, int Quantity)>> GetAllStocksWithQuantityAsync(int userId)
         {
-            return await _context.Stocks
-                                .Where(s => s.Quantity > 0 && s.Id == userId)
+            var stocks = await _context.Stocks
+                                .Where(s => s.Quantity > 0 && s.UserId == userId)
                                 .Select(s => new ValueTuple<string, int>(s.Name, s.Quantity))
                                 .ToListAsync();
+
+            return stocks;
         }
-        
+
 
     }
 }

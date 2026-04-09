@@ -3,5 +3,8 @@
     public interface IStockRepo
     {
 
+
+        Task<IEnumerable<(string Name, int Quantity)>> GetAllStocksWithQuantityAsync(int userId);
+
     }
 }

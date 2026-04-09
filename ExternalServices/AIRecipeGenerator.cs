@@ -2,8 +2,7 @@
 using System.Text;
 using NutriCook_AI_WebAPI.DTOs.AIRecipe;
 using NutriCook_AI_WebAPI.Interfaces.IRepo;
-using NutriCook_AI_WebAPI.Models;
-using NutriCook_AI_WebAPI.DTOs.Recipe;
+using System.Text.Json;
 
 namespace NutriCook_AI_WebAPI.ExternalServices
 {
@@ -11,16 +10,20 @@ namespace NutriCook_AI_WebAPI.ExternalServices
     {
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
-        public readonly IRecipeRepo _recipeRepo;
+        private readonly IRecipeRepo _recipeRepo;
+        private readonly IStockRepo _stockRepo;
 
-        public AIRecipeGenerator(HttpClient httpClient, IConfiguration config, IRecipeRepo recipeRepo)
+
+        public AIRecipeGenerator(HttpClient httpClient, IConfiguration config, IRecipeRepo recipeRepo, IStockRepo stockRepo)
         {
             _httpClient = httpClient;
             _apiKey = config["Gemini:ApiKey"];
             _recipeRepo = recipeRepo;
+            _stockRepo = stockRepo;
         }
         public async Task<AIRecipeResponse> GenerateRecipe(AIRecipeRequest req)
         {
+
             var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={_apiKey}";
             var requestBody = new
             {
@@ -89,22 +92,104 @@ namespace NutriCook_AI_WebAPI.ExternalServices
             string difficulty = Extract("difficulty:");
             string description = Extract("description:");
 
-            //var newRecipe = await _recipeRepo.CreateNewRecipe(new Recipe
-            //{
-            //    Title = title,
-            //    Difficulty = difficulty,
-            //    Description = description
-            //});
-
-
             return new AIRecipeResponse
             {
                 Title = title,
-                Difficulty = difficulty,    
+                Difficulty = difficulty,
                 Description = description
             };
         }
 
+
+        public async Task<IEnumerable<AIRecipeResponse>> GenerateRecipeBaseByStock(int userId)
+        {
+
+            var stocks = await _stockRepo.GetAllStocksWithQuantityAsync(userId);
+
+            var ingredientsText = string.Join("\n", stocks.Select(s => $"{s.Name} - {s.Quantity}"));
+
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key={_apiKey}";
+
+            var requestBody = new
+            {
+                contents = new[]
+                {
+            new
+            {
+                parts = new[]
+                {
+                    new
+                    {
+                        text = $@"
+                                Generate 7 recipes based on the following ingredients and quantities:
+
+                                {ingredientsText}
+
+                                Rules:
+                                - Use the ingredients based on available quantity
+                                - It is okay if not all ingredients are used
+                                - Prefer recipes that match the quantities
+
+
+                                Return ONLY valid JSON:
+
+                                [
+                                  {{
+                                    ""title"": ""value"",
+                                    ""difficulty"": ""value"",
+                                    ""description"": ""value""
+                                  }}
+                                ]
+
+                                Rules:
+                                - Return exactly 7 items
+                                - No extra text
+                                - No markdown
+                                - No emojis
+                                "
+                    }
+                }
+            }
+                }
+            };
+
+
+            // Use DI HttpClient (IMPORTANT)
+            var response = await _httpClient.PostAsJsonAsync(url, requestBody);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Gemini API failed: {response.StatusCode}, {responseContent}");
+            }
+
+            // Parse Gemini response
+            using var doc = JsonDocument.Parse(responseContent);
+
+            var text = doc.RootElement
+                .GetProperty("candidates")[0]
+                .GetProperty("content")
+                .GetProperty("parts")[0]
+                .GetProperty("text")
+                .GetString();
+
+            if (string.IsNullOrWhiteSpace(text))
+                return new List<AIRecipeResponse>();
+
+            // Clean possible markdown wrappers
+            text = text.Replace("```json", "").Replace("```", "").Trim();
+
+            // Deserialize into your model
+            var recipes = System.Text.Json.JsonSerializer.Deserialize<List<AIRecipeResponse>>(
+                text,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+            return recipes;
+        }
 
 
     }
